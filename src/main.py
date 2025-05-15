@@ -1,5 +1,6 @@
 import os
 import shutil
+from generate_page import generate_page
 
 def copy_static(src, dest):
     """
@@ -33,10 +34,23 @@ def copy_static(src, dest):
             shutil.copy(src_file, dest_file)
 
 def main():
-    """
-    Main function to copy static content.
-    """
+    print("Starting site generation...")
+
+    # Clean public directory
+    if os.path.exists("public"):
+        print("Removing existing public directory...")
+        shutil.rmtree("public")
+
+    # Copy static files
+    print("Copying static files...")
     copy_static("static", "public")
+
+    # Generate main page
+    print("Generating main page...")
+    generate_page("content/index.md", "template.html", "public/index.html")
+    print("Main page generation complete.")
 
 if __name__ == "__main__":
     main()
+
+
