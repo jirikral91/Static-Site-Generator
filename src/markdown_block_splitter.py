@@ -1,10 +1,18 @@
 def markdown_to_blocks(markdown):
-    """
-    Split markdown text into blocks based on blank lines.
-    """
-    # Split the markdown text by two or more newlines
-    raw_blocks = markdown.split("\n\n")
-    # Strip whitespace from each block and filter out empty blocks
-    blocks = [block.strip() for block in raw_blocks if block.strip()]
+    lines = markdown.split("\n")
+    blocks = []
+    current_block = []
+
+    for line in lines:
+        if line.strip() == "":
+            if current_block:
+                blocks.append("\n".join(current_block).strip())
+                current_block = []
+        else:
+            current_block.append(line)
+
+    if current_block:
+        blocks.append("\n".join(current_block).strip())
+
     return blocks
 

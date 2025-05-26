@@ -13,13 +13,15 @@ def text_to_children(text):
     nodes = text_to_textnodes(text)
     return [text_node_to_html_node(node) for node in nodes]
 
+
 def handle_paragraph(block):
     """
     Handle paragraph block.
     """
-    # Join multiple lines into a single text block
+    # Merge lines into one line with spaces (important for inline markdown)
     text = " ".join(block.splitlines()).strip()
     return ParentNode("p", text_to_children(text))
+
 
 
 def handle_heading(block):
@@ -54,9 +56,12 @@ def handle_quote(block):
     """
     Handle quote block.
     """
-    lines = [line[1:].strip() for line in block.split("\n")]
-    quote_text = "\n".join(lines)
-    return ParentNode("blockquote", text_to_children(quote_text))
+    # Remove '> ' from each line and merge them into one text block
+    lines = [line[1:].strip() for line in block.split("\n") if line.strip()]
+    text = " ".join(lines)
+    return ParentNode("blockquote", text_to_children(text))
+
+
 
 def handle_unordered_list(block):
     """
@@ -80,8 +85,10 @@ def markdown_to_html_node(markdown):
     """
     blocks = markdown_to_blocks(markdown)
     children = []
-
+    print("BLOCKS:")
     for block in blocks:
+        print("---")
+        print(block)
         block_type = block_to_block_type(block)
 
         if block_type == BlockType.PARAGRAPH:
