@@ -2,6 +2,8 @@ import os
 import shutil
 from generate_page import generate_page
 from generate_pages_recursive import generate_pages_recursive
+import sys
+
 
 
 def copy_static(src, dest):
@@ -38,18 +40,24 @@ def copy_static(src, dest):
 def main():
     print("Starting site generation...")
 
-    # Clean public directory
-    if os.path.exists("public"):
-        print("Removing existing public directory...")
-        shutil.rmtree("public")
+    # Get base path from command-line argument or default to "/"
+    base_path = sys.argv[1] if len(sys.argv) > 1 else "/"
+
+    # Use "docs" instead of "public" for GitHub Pages
+    output_dir = "docs"
+
+    # Clean output directory
+    if os.path.exists(output_dir):
+        print(f"Removing existing {output_dir} directory...")
+        shutil.rmtree(output_dir)
 
     # Copy static files
     print("Copying static files...")
-    copy_static("static", "public")
+    copy_static("static", output_dir)
 
-    # Generate all pages
+    # Generate all pages recursively
     print("Generating all content pages recursively...")
-    generate_pages_recursive("content", "template.html", "public")
+    generate_pages_recursive("content", "template.html", output_dir, base_path)
     print("All pages generated.")
 
 
